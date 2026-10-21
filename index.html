@@ -2,86 +2,137 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Survival Models - Pace App</title>
+    
+    <!-- PWA Settings -->
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0f172a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="SM Tracker">
+    <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3413/3413535.png">
+
+    <!-- Fonts & Tailwind -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
     <style>
         body {
-            background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #0b0f19;
+            color: #f1f5f9;
             min-height: 100vh;
+        }
+        .glass-card {
+            background: rgba(22, 30, 49, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+        .item-row {
+            background: rgba(15, 23, 42, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .item-row.completed {
+            background: rgba(79, 70, 229, 0.12);
+            border-color: rgba(99, 102, 241, 0.35);
         }
     </style>
 </head>
-<body class="font-sans text-slate-800">
+<body class="p-4 sm:p-6 pb-20 max-w-xl mx-auto selection:bg-indigo-500 selection:text-white">
 
-<div class="max-w-2xl mx-auto py-8 px-4">
-    <!-- Header -->
-    <header class="text-center mb-6">
-        <h1 class="text-3xl font-extrabold text-indigo-700 tracking-tight mb-2">Survival Models Tracker</h1>
-        <p class="text-slate-500 font-medium text-sm">Track your study pace to ace your quizzes & exams.</p>
+    <!-- Top Navigation / Install Action -->
+    <div class="flex items-center justify-between py-3 mb-4">
+        <div class="flex items-center gap-2.5">
+            <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-indigo-500/30">
+                SM
+            </div>
+            <span class="text-xs uppercase font-extrabold tracking-widest text-slate-400">Pace Tracker</span>
+        </div>
+        <button id="install-btn" class="hidden items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-1.5 rounded-full transition-all shadow-md shadow-indigo-600/30">
+            <i class="fas fa-download text-[10px]"></i> Install App
+        </button>
+    </div>
+
+    <!-- Header Section -->
+    <header class="mb-6">
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Survival Models</h1>
+        <p class="text-xs sm:text-sm text-slate-400 mt-1">Structured schedule for Mon / Thu / Fri study blocks.</p>
     </header>
 
-    <!-- Progress Overview -->
-    <div class="bg-white rounded-3xl shadow-xl shadow-indigo-100/70 p-6 mb-6 border border-white">
-        <div class="flex justify-between items-end mb-3">
+    <!-- Progress Card -->
+    <div class="glass-card rounded-2xl p-5 mb-6 shadow-2xl">
+        <div class="flex justify-between items-baseline mb-3">
             <div>
-                <p class="text-xs font-bold text-slate-400 uppercase tracking-wider">Overall Progress</p>
-                <h2 id="overall-text" class="text-3xl font-extrabold text-indigo-900">0/13 Topics</h2>
+                <span class="text-[10px] font-bold tracking-wider text-slate-400 uppercase">Total Progress</span>
+                <div class="text-2xl font-black text-white mt-0.5" id="stats-count">0 of 13 completed</div>
             </div>
-            <div id="percentage-badge" class="bg-indigo-100 text-indigo-700 rounded-full px-3 py-1 text-xs font-bold">
-                0%
-            </div>
+            <div id="stats-pct" class="text-xl font-black text-indigo-400">0%</div>
         </div>
-        <div class="w-full bg-slate-100 rounded-full h-3 overflow-hidden shadow-inner">
-            <div id="progress-bar" class="bg-indigo-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+        <div class="w-full h-2.5 bg-slate-800 rounded-full overflow-hidden">
+            <div id="progress-bar" class="h-full bg-gradient-to-r from-indigo-500 to-violet-500 rounded-full transition-all duration-300" style="width: 0%"></div>
         </div>
     </div>
 
-    <!-- Milestones -->
-    <div class="space-y-5">
-        <!-- Quiz 1 -->
-        <div class="bg-white/80 backdrop-blur-md rounded-3xl border border-white shadow-lg p-5">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-indigo-900 flex items-center gap-2">
-                    <span class="bg-indigo-100 text-indigo-600 w-7 h-7 flex items-center justify-center rounded-xl text-xs font-bold">Q1</span>
-                    Quiz 1 (Topics 1-4)
-                </h3>
-                <span class="text-xs font-bold text-white bg-indigo-500 rounded-full px-3 py-1">Due: Nov 5</span>
+    <!-- Milestones List -->
+    <div class="space-y-6">
+        <!-- Milestone 1 -->
+        <section class="glass-card rounded-2xl p-4 sm:p-5">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/5">
+                <div>
+                    <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        Milestone 1: Quiz 1
+                    </h2>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Topics 1 – 4</p>
+                </div>
+                <span class="text-[10px] font-bold text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-md">
+                    Due Nov 5
+                </span>
             </div>
-            <div id="milestone-1" class="space-y-3"></div>
-        </div>
+            <div id="milestone-1" class="space-y-2.5"></div>
+        </section>
 
-        <!-- Quiz 2 -->
-        <div class="bg-white/80 backdrop-blur-md rounded-3xl border border-white shadow-lg p-5">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-indigo-900 flex items-center gap-2">
-                    <span class="bg-indigo-100 text-indigo-600 w-7 h-7 flex items-center justify-center rounded-xl text-xs font-bold">Q2</span>
-                    Quiz 2 (Topics 5-8)
-                </h3>
-                <span class="text-xs font-bold text-white bg-indigo-500 rounded-full px-3 py-1">Due: Nov 19</span>
+        <!-- Milestone 2 -->
+        <section class="glass-card rounded-2xl p-4 sm:p-5">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/5">
+                <div>
+                    <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-indigo-500"></span>
+                        Milestone 2: Quiz 2
+                    </h2>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Topics 5 – 8</p>
+                </div>
+                <span class="text-[10px] font-bold text-indigo-300 bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-1 rounded-md">
+                    Due Nov 19
+                </span>
             </div>
-            <div id="milestone-2" class="space-y-3"></div>
-        </div>
+            <div id="milestone-2" class="space-y-2.5"></div>
+        </section>
 
         <!-- Final Exam -->
-        <div class="bg-white/80 backdrop-blur-md rounded-3xl border border-white shadow-lg p-5">
-            <div class="flex justify-between items-center mb-4">
-                <h3 class="text-lg font-bold text-indigo-900 flex items-center gap-2">
-                    <span class="bg-indigo-100 text-indigo-600 w-7 h-7 flex items-center justify-center rounded-xl text-xs font-bold">EX</span>
-                    Exam Review (Topics 9-13)
-                </h3>
-                <span class="text-xs font-bold text-white bg-indigo-500 rounded-full px-3 py-1">Due: End of Nov</span>
+        <section class="glass-card rounded-2xl p-4 sm:p-5">
+            <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/5">
+                <div>
+                    <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-violet-500"></span>
+                        Milestone 3: Final Review
+                    </h2>
+                    <p class="text-[11px] text-slate-400 mt-0.5">Topics 9 – 13</p>
+                </div>
+                <span class="text-[10px] font-bold text-violet-300 bg-violet-500/10 border border-violet-500/20 px-2.5 py-1 rounded-md">
+                    Due End Nov
+                </span>
             </div>
-            <div id="milestone-3" class="space-y-3"></div>
-        </div>
+            <div id="milestone-3" class="space-y-2.5"></div>
+        </section>
     </div>
-</div>
 
 <script>
-    const totalTopics = 13;
-    let completedTopics = JSON.parse(localStorage.getItem('survivalModelsProgress')) || Array(totalTopics).fill(false);
-
     const topics = [
         "Topic 1: Introduction to Survival Analysis",
         "Topic 2: Survival Functions & Hazard Functions",
@@ -98,79 +149,84 @@
         "Topic 13: Competing Risks and Multi-state Models"
     ];
 
-    function renderApp() {
-        const milestone1Container = document.getElementById('milestone-1');
-        const milestone2Container = document.getElementById('milestone-2');
-        const milestone3Container = document.getElementById('milestone-3');
+    let completed = JSON.parse(localStorage.getItem('sm_tracker_state')) || Array(topics.length).fill(false);
 
-        milestone1Container.innerHTML = '';
-        milestone2Container.innerHTML = '';
-        milestone3Container.innerHTML = '';
+    function render() {
+        const m1 = document.getElementById('milestone-1');
+        const m2 = document.getElementById('milestone-2');
+        const m3 = document.getElementById('milestone-3');
 
-        topics.forEach((topic, index) => {
-            const isChecked = completedTopics[index];
-            const topicElement = createTopicElement(index, isChecked);
+        m1.innerHTML = '';
+        m2.innerHTML = '';
+        m3.innerHTML = '';
 
-            if (index < 4) {
-                milestone1Container.appendChild(topicElement);
-            } else if (index < 8) {
-                milestone2Container.appendChild(topicElement);
-            } else {
-                milestone3Container.appendChild(topicElement);
-            }
+        topics.forEach((topic, idx) => {
+            const isDone = completed[idx];
+            const item = document.createElement('div');
+            item.className = `item-row rounded-xl p-3 flex items-center justify-between cursor-pointer ${isDone ? 'completed' : ''}`;
+            
+            item.innerHTML = `
+                <div class="flex items-center gap-3 pr-2 min-w-0">
+                    <div class="w-5 h-5 rounded-md flex-shrink-0 flex items-center justify-center border transition-all ${
+                        isDone ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-600 bg-slate-900/50 text-transparent'
+                    }">
+                        <i class="fas fa-check text-[10px]"></i>
+                    </div>
+                    <span class="text-xs sm:text-sm font-medium truncate ${isDone ? 'text-slate-400 line-through' : 'text-slate-200'}">
+                        ${topic}
+                    </span>
+                </div>
+            `;
+
+            item.addEventListener('click', () => {
+                completed[idx] = !completed[idx];
+                localStorage.setItem('sm_tracker_state', JSON.stringify(completed));
+                render();
+            });
+
+            if (idx < 4) m1.appendChild(item);
+            else if (idx < 8) m2.appendChild(item);
+            else m3.appendChild(item);
         });
 
-        updateOverallProgress();
-        localStorage.setItem('survivalModelsProgress', JSON.stringify(completedTopics));
+        const doneCount = completed.filter(Boolean).length;
+        const pct = Math.round((doneCount / topics.length) * 100);
+
+        document.getElementById('stats-count').textContent = `${doneCount} of ${topics.length} completed`;
+        document.getElementById('stats-pct').textContent = `${pct}%`;
+        document.getElementById('progress-bar').style.width = `${pct}%`;
     }
 
-    function createTopicElement(index, isChecked) {
-        const row = document.createElement('label');
-        row.className = `flex items-center gap-3 p-3.5 rounded-xl cursor-pointer transition-all duration-200 border ${
-            isChecked ? 'bg-indigo-50/70 border-indigo-200' : 'bg-white border-slate-100 hover:border-indigo-100'
-        }`;
+    render();
 
-        const checkboxInput = document.createElement('input');
-        checkboxInput.type = 'checkbox';
-        checkboxInput.checked = isChecked;
-        checkboxInput.className = 'w-5 h-5 flex-shrink-0 text-indigo-600 rounded border-slate-300 focus:ring-indigo-500 cursor-pointer';
-
-        checkboxInput.addEventListener('change', () => {
-            completedTopics[index] = checkboxInput.checked;
-            renderApp();
+    // Register Service Worker for PWA / Installability
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed:', err));
         });
-
-        const textSpan = document.createElement('span');
-        textSpan.className = `flex-1 text-sm font-semibold leading-snug ${isChecked ? 'text-indigo-900 line-through opacity-75' : 'text-slate-700'}`;
-        textSpan.textContent = topics[index];
-
-        const iconContainer = document.createElement('div');
-        iconContainer.className = `w-6 h-6 flex-shrink-0 rounded-full flex items-center justify-center transition-colors ${
-            isChecked ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-slate-300'
-        }`;
-        
-        const icon = document.createElement('i');
-        icon.className = 'fas fa-check text-xs';
-        iconContainer.appendChild(icon);
-
-        row.appendChild(checkboxInput);
-        row.appendChild(textSpan);
-        row.appendChild(iconContainer);
-
-        return row;
     }
 
-    function updateOverallProgress() {
-        const completedCount = completedTopics.filter(Boolean).length;
-        const percentage = Math.round((completedCount / totalTopics) * 100);
+    // Install prompt handling
+    let deferredPrompt;
+    const installBtn = document.getElementById('install-btn');
 
-        document.getElementById('progress-bar').style.width = `${percentage}%`;
-        document.getElementById('overall-text').textContent = `${completedCount}/${totalTopics} Topics`;
-        document.getElementById('percentage-badge').textContent = `${percentage}%`;
-    }
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        installBtn.classList.remove('hidden');
+        installBtn.classList.add('flex');
+    });
 
-    renderApp();
+    installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        if (outcome === 'accepted') {
+            installBtn.classList.add('hidden');
+            installBtn.classList.remove('flex');
+        }
+        deferredPrompt = null;
+    });
 </script>
-
 </body>
 </html>
