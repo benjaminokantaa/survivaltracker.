@@ -72,7 +72,7 @@
         <div class="flex justify-between items-baseline mb-3">
             <div>
                 <span class="text-[10px] font-bold tracking-wider text-slate-400 uppercase">Total Progress</span>
-                <div class="text-2xl font-black text-white mt-0.5" id="stats-count">0 of 13 completed</div>
+                <div class="text-2xl font-black text-white mt-0.5" id="stats-count">0 of 17 sessions completed</div>
             </div>
             <div id="stats-pct" class="text-xl font-black text-indigo-400">0%</div>
         </div>
@@ -82,134 +82,203 @@
     </div>
 
     <!-- Milestones List -->
-    <div class="space-y-6">
-        <!-- Milestone 1 -->
-        <section class="glass-card rounded-2xl p-4 sm:p-5">
-            <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/5">
-                <div>
-                    <h2 class="text-sm font-bold text-white flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>
-                        Milestone 1: Quiz 1 Prep
-                    </h2>
-                    <p class="text-[11px] text-slate-400 mt-0.5">Topics 1 – 4</p>
-                </div>
-                <span class="text-[10px] font-bold text-amber-300 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded-md">
-                    Target: Nov 5
-                </span>
-            </div>
-            <div id="milestone-1" class="space-y-2.5"></div>
-        </section>
-
-        <!-- Milestone 2 -->
-        <section class="glass-card rounded-2xl p-4 sm:p-5">
-            <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/5">
-                <div>
-                    <h2 class="text-sm font-bold text-white flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-indigo-400"></span>
-                        Milestone 2: Quiz 2 Prep
-                    </h2>
-                    <p class="text-[11px] text-slate-400 mt-0.5">Topics 5 – 8</p>
-                </div>
-                <span class="text-[10px] font-bold text-indigo-300 bg-indigo-500/10 border border-indigo-500/20 px-2.5 py-1 rounded-md">
-                    Target: Nov 19
-                </span>
-            </div>
-            <div id="milestone-2" class="space-y-2.5"></div>
-        </section>
-
-        <!-- Final Exam -->
-        <section class="glass-card rounded-2xl p-4 sm:p-5">
-            <div class="flex items-center justify-between pb-3 mb-3 border-b border-white/5">
-                <div>
-                    <h2 class="text-sm font-bold text-white flex items-center gap-2">
-                        <span class="w-2.5 h-2.5 rounded-full bg-violet-400"></span>
-                        Milestone 3: Final Review
-                    </h2>
-                    <p class="text-[11px] text-slate-400 mt-0.5">Topics 9 – 13</p>
-                </div>
-                <span class="text-[10px] font-bold text-violet-300 bg-violet-500/10 border border-violet-500/20 px-2.5 py-1 rounded-md">
-                    Target: End of Nov
-                </span>
-            </div>
-            <div id="milestone-3" class="space-y-2.5"></div>
-        </section>
-    </div>
+    <div id="milestones-container" class="space-y-6"></div>
 
 <script>
-    const topics = [
-        { title: "Topic 1: Introduction to Survival Analysis", date: "Thu, Oct 22" },
-        { title: "Topic 2: Survival Functions & Hazard Functions", date: "Fri, Oct 23" },
-        { title: "Topic 3: Censoring and Truncation Mechanisms", date: "Mon, Oct 26" },
-        { title: "Topic 4: Non-parametric Estimation (Kaplan-Meier)", date: "Thu, Oct 29" },
-        { title: "Topic 5: Nelson-Aalen Estimator", date: "Fri, Nov 6" },
-        { title: "Topic 6: Life Tables and Actuarial Estimators", date: "Mon, Nov 9" },
-        { title: "Topic 7: Parametric Survival Distributions (Exponential)", date: "Thu, Nov 12" },
-        { title: "Topic 8: Parametric Distributions (Weibull, Gompertz)", date: "Fri, Nov 13" },
-        { title: "Topic 9: Proportional Hazards Models", date: "Fri, Nov 20" },
-        { title: "Topic 10: Cox Proportional Hazards Regression", date: "Mon, Nov 23" },
-        { title: "Topic 11: Assessing Model Fit and Diagnostics", date: "Thu, Nov 26" },
-        { title: "Topic 12: Accelerated Failure Time Models", date: "Fri, Nov 27" },
-        { title: "Topic 13: Competing Risks and Multi-state Models", date: "Mon, Nov 30" }
+    const schedule = [
+        {
+            milestoneTitle: "Milestone 1: Quiz 1 Prep",
+            milestoneTag: "Target: Nov 5",
+            tagColor: "amber",
+            weeks: [
+                {
+                    weekTitle: "Week 1",
+                    items: [
+                        { id: 0, title: "Topic 1: Introduction to Survival Analysis", date: "Thu, Oct 22", type: "topic" },
+                        { id: 1, title: "Topic 2: Survival Functions & Hazard Functions", date: "Fri, Oct 23", type: "topic" }
+                    ]
+                },
+                {
+                    weekTitle: "Week 2",
+                    items: [
+                        { id: 2, title: "Topic 3: Censoring and Truncation Mechanisms", date: "Mon, Oct 26", type: "topic" },
+                        { id: 3, title: "Topic 4: Non-parametric Estimation (Kaplan-Meier)", date: "Thu, Oct 29", type: "topic" },
+                        { id: 4, title: "Buffer & Practice Problems (Topics 1–4)", date: "Fri, Oct 30", type: "practice" }
+                    ]
+                },
+                {
+                    weekTitle: "Week 3",
+                    items: [
+                        { id: 5, title: "Quiz 1 Review & Past Papers", date: "Mon, Nov 2", type: "review" },
+                        { id: 6, title: "🎯 Quiz 1 Target Date (Topics 1–4)", date: "Thu, Nov 5", type: "exam" }
+                    ]
+                }
+            ]
+        },
+        {
+            milestoneTitle: "Milestone 2: Quiz 2 Prep",
+            milestoneTag: "Target: Nov 19",
+            tagColor: "indigo",
+            weeks: [
+                {
+                    weekTitle: "Week 3 (Continued)",
+                    items: [
+                        { id: 7, title: "Topic 5: Nelson-Aalen Estimator", date: "Fri, Nov 6", type: "topic" }
+                    ]
+                },
+                {
+                    weekTitle: "Week 4",
+                    items: [
+                        { id: 8, title: "Topic 6: Life Tables and Actuarial Estimators", date: "Mon, Nov 9", type: "topic" },
+                        { id: 9, title: "Topic 7: Parametric Survival Distributions (Exponential)", date: "Thu, Nov 12", type: "topic" },
+                        { id: 10, title: "Topic 8: Parametric Distributions (Weibull, Gompertz)", date: "Fri, Nov 13", type: "topic" }
+                    ]
+                },
+                {
+                    weekTitle: "Week 5",
+                    items: [
+                        { id: 11, title: "Quiz 2 Review & Problem Sets (Topics 5–8)", date: "Mon, Nov 16", type: "review" },
+                        { id: 12, title: "🎯 Quiz 2 Target Date (Topics 5–8)", date: "Thu, Nov 19", type: "exam" }
+                    ]
+                }
+            ]
+        },
+        {
+            milestoneTitle: "Milestone 3: Final Review",
+            milestoneTag: "Target: End of Nov",
+            tagColor: "violet",
+            weeks: [
+                {
+                    weekTitle: "Week 5 (Continued)",
+                    items: [
+                        { id: 13, title: "Topic 9: Proportional Hazards Models", date: "Fri, Nov 20", type: "topic" }
+                    ]
+                },
+                {
+                    weekTitle: "Week 6",
+                    items: [
+                        { id: 14, title: "Topic 10: Cox Proportional Hazards Regression", date: "Mon, Nov 23", type: "topic" },
+                        { id: 15, title: "Topic 11: Assessing Model Fit and Diagnostics", date: "Thu, Nov 26", type: "topic" },
+                        { id: 16, title: "Topic 12: Accelerated Failure Time Models", date: "Fri, Nov 27", type: "topic" }
+                    ]
+                },
+                {
+                    weekTitle: "Week 7",
+                    items: [
+                        { id: 17, title: "Topic 13: Competing Risks and Multi-state Models", date: "Mon, Nov 30", type: "topic" }
+                    ]
+                }
+            ]
+        }
     ];
 
-    let completed = JSON.parse(localStorage.getItem('sm_tracker_state')) || Array(topics.length).fill(false);
+    const totalSessions = 18;
+    let completed = JSON.parse(localStorage.getItem('sm_full_schedule_state')) || {};
 
     function render() {
-        const m1 = document.getElementById('milestone-1');
-        const m2 = document.getElementById('milestone-2');
-        const m3 = document.getElementById('milestone-3');
+        const container = document.getElementById('milestones-container');
+        container.innerHTML = '';
 
-        m1.innerHTML = '';
-        m2.innerHTML = '';
-        m3.innerHTML = '';
+        let doneCount = 0;
 
-        topics.forEach((item, idx) => {
-            const isDone = completed[idx];
-            const row = document.createElement('div');
-            row.className = `item-row rounded-xl p-3 sm:p-3.5 flex items-center justify-between gap-3 cursor-pointer select-none ${isDone ? 'completed' : ''}`;
-            
-            row.innerHTML = `
-                <div class="flex items-start gap-3 min-w-0">
-                    <div class="mt-0.5 w-5 h-5 rounded-md flex-shrink-0 flex items-center justify-center border transition-all ${
-                        isDone ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-600 bg-slate-900/50 text-transparent'
-                    }">
-                        <i class="fas fa-check text-[10px]"></i>
+        schedule.forEach(milestone => {
+            const section = document.createElement('section');
+            section.className = 'glass-card rounded-2xl p-4 sm:p-5';
+
+            const tagColorClasses = {
+                amber: "text-amber-300 bg-amber-500/10 border-amber-500/20",
+                indigo: "text-indigo-300 bg-indigo-500/10 border-indigo-500/20",
+                violet: "text-violet-300 bg-violet-500/10 border-violet-500/20"
+            }[milestone.tagColor] || "text-indigo-300 bg-indigo-500/10 border-indigo-500/20";
+
+            const dotColor = {
+                amber: "bg-amber-400",
+                indigo: "bg-indigo-400",
+                violet: "bg-violet-400"
+            }[milestone.tagColor] || "bg-indigo-400";
+
+            let weeksHtml = '';
+
+            milestone.weeks.forEach(wk => {
+                weeksHtml += `
+                    <div class="pt-2">
+                        <div class="text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-2 pl-1">${wk.weekTitle}</div>
+                        <div class="space-y-2">
+                `;
+
+                wk.items.forEach(item => {
+                    const isDone = !!completed[item.id];
+                    if (isDone) doneCount++;
+
+                    const badgeStyle = isDone
+                        ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20'
+                        : item.type === 'practice' || item.type === 'review'
+                        ? 'bg-indigo-500/15 text-indigo-300 border border-indigo-500/30'
+                        : item.type === 'exam'
+                        ? 'bg-amber-500/15 text-amber-300 border border-amber-500/30'
+                        : 'bg-slate-800 text-slate-400';
+
+                    const badgeLabel = isDone ? 'Done' : item.date.split(',')[0];
+
+                    weeksHtml += `
+                        <div onclick="toggleItem(${item.id})" class="item-row rounded-xl p-3 sm:p-3.5 flex items-center justify-between gap-3 cursor-pointer select-none ${isDone ? 'completed' : ''}">
+                            <div class="flex items-start gap-3 min-w-0">
+                                <div class="mt-0.5 w-5 h-5 rounded-md flex-shrink-0 flex items-center justify-center border transition-all ${
+                                    isDone ? 'bg-indigo-600 border-indigo-600 text-white' : 'border-slate-600 bg-slate-900/50 text-transparent'
+                                }">
+                                    <i class="fas fa-check text-[10px]"></i>
+                                </div>
+                                <div class="flex flex-col">
+                                    <span class="text-xs sm:text-sm font-medium leading-snug ${isDone ? 'text-slate-400 line-through opacity-80' : 'text-slate-200'}">
+                                        ${item.title}
+                                    </span>
+                                    <span class="text-[10px] font-semibold text-slate-400 mt-1 flex items-center gap-1">
+                                        <i class="far fa-calendar-alt text-[9px] text-indigo-400"></i> ${item.date}
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="flex-shrink-0">
+                                <span class="text-[10px] px-2 py-0.5 rounded font-semibold ${badgeStyle}">
+                                    ${badgeLabel}
+                                </span>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                weeksHtml += `</div></div>`;
+            });
+
+            section.innerHTML = `
+                <div class="flex items-center justify-between pb-3 mb-2 border-b border-white/5">
+                    <div>
+                        <h2 class="text-sm font-bold text-white flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full ${dotColor}"></span>
+                            ${milestone.milestoneTitle}
+                        </h2>
                     </div>
-                    <div class="flex flex-col">
-                        <span class="text-xs sm:text-sm font-medium leading-snug ${isDone ? 'text-slate-400 line-through opacity-80' : 'text-slate-200'}">
-                            ${item.title}
-                        </span>
-                        <span class="text-[10px] font-semibold text-slate-400 mt-1 flex items-center gap-1">
-                            <i class="far fa-calendar-alt text-[9px] text-indigo-400"></i> ${item.date}
-                        </span>
-                    </div>
-                </div>
-                <div class="flex-shrink-0">
-                    <span class="text-[10px] px-2 py-0.5 rounded font-semibold ${
-                        isDone ? 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20' : 'bg-slate-800 text-slate-400'
-                    }">
-                        ${isDone ? 'Done' : item.date.split(',')[0]}
+                    <span class="text-[10px] font-bold border px-2.5 py-1 rounded-md ${tagColorClasses}">
+                        ${milestone.milestoneTag}
                     </span>
+                </div>
+                <div class="space-y-3">
+                    ${weeksHtml}
                 </div>
             `;
 
-            row.addEventListener('click', () => {
-                completed[idx] = !completed[idx];
-                localStorage.setItem('sm_tracker_state', JSON.stringify(completed));
-                render();
-            });
-
-            if (idx < 4) m1.appendChild(row);
-            else if (idx < 8) m2.appendChild(row);
-            else m3.appendChild(row);
+            container.appendChild(section);
         });
 
-        const doneCount = completed.filter(Boolean).length;
-        const pct = Math.round((doneCount / topics.length) * 100);
-
-        document.getElementById('stats-count').textContent = `${doneCount} of ${topics.length} completed`;
+        const pct = Math.round((doneCount / totalSessions) * 100);
+        document.getElementById('stats-count').textContent = `${doneCount} of ${totalSessions} sessions completed`;
         document.getElementById('stats-pct').textContent = `${pct}%`;
         document.getElementById('progress-bar').style.width = `${pct}%`;
+    }
+
+    function toggleItem(id) {
+        completed[id] = !completed[id];
+        localStorage.setItem('sm_full_schedule_state', JSON.stringify(completed));
+        render();
     }
 
     render();
