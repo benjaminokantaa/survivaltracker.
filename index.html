@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survival Models - Pace App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+    <style>
+        :root {
+            --primary: #4f46e5;
+            --secondary: #6366f1;
+            --bg-gradient: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%);
+        }
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+        }
+    </style>
+</head>
+<body class="font-sans text-slate-800">
+
+<div class="max-w-2xl mx-auto py-8 px-4">
+    <!-- Header -->
+    <header class="text-center mb-8">
+        <h1 class="text-3xl font-bold text-indigo-700 mb-2">Survival Models Tracker</h1>
+        <p class="text-slate-500 font-medium">Track your study pace to ace your quizzes & exams.</p>
+    </header>
+
+    <!-- Progress Overview -->
+    <div class="bg-white rounded-3xl shadow-xl shadow-indigo-100 p-8 mb-8 border border-white">
+        <div class="flex justify-between items-end mb-4">
+            <div>
+                <p class="text-sm font-semibold text-slate-400 uppercase tracking-wider">Overall Progress</p>
+                <h2 id="overall-text" class="text-4xl font-extrabold text-indigo-900">0/13 Topics</h2>
+            </div>
+            <div id="percentage-badge" class="bg-indigo-100 text-indigo-700 rounded-full px-4 py-1 text-sm font-bold">
+                0%
+            </div>
+        </div>
+        <!-- Progress Bar -->
+        <div class="w-full bg-slate-100 rounded-full h-4 overflow-hidden shadow-inner">
+            <div id="progress-bar" class="bg-indigo-600 h-full rounded-full transition-all duration-500" style="width: 0%"></div>
+        </div>
+    </div>
+
+    <!-- Milestones -->
+    <div class="space-y-6">
+        <!-- Quiz 1 -->
+        <div class="bg-white/80 backdrop-blur-md rounded-3xl border border-white shadow-xl shadow-slate-100/50 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-indigo-900 flex items-center gap-2">
+                    <span class="bg-indigo-100 text-indigo-600 w-8 h-8 flex items-center justify-center rounded-2xl text-sm">Q1</span>
+                    Quiz 1 (Topics 1-4)
+                </h3>
+                <span class="text-xs font-bold text-white bg-indigo-500 rounded-full px-4 py-1">Due: Nov 5</span>
+            </div>
+            <div id="milestone-1" class="space-y-3"></div>
+        </div>
+
+        <!-- Quiz 2 -->
+        <div class="bg-white/80 backdrop-blur-md rounded-3xl border border-white shadow-xl shadow-slate-100/50 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-indigo-900 flex items-center gap-2">
+                    <span class="bg-indigo-100 text-indigo-600 w-8 h-8 flex items-center justify-center rounded-2xl text-sm">Q2</span>
+                    Quiz 2 (Topics 5-8)
+                </h3>
+                <span class="text-xs font-bold text-white bg-indigo-500 rounded-full px-4 py-1">Due: Nov 19</span>
+            </div>
+            <div id="milestone-2" class="space-y-3"></div>
+        </div>
+
+        <!-- Final Exam -->
+        <div class="bg-white/80 backdrop-blur-md rounded-3xl border border-white shadow-xl shadow-slate-100/50 p-6">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-xl font-bold text-indigo-900 flex items-center gap-2">
+                    <span class="bg-indigo-100 text-indigo-600 w-8 h-8 flex items-center justify-center rounded-2xl text-sm">EX</span>
+                    Exam Review (Topics 9-13)
+                </h3>
+                <span class="text-xs font-bold text-white bg-indigo-500 rounded-full px-4 py-1">Due: End of Nov</span>
+            </div>
+            <div id="milestone-3" class="space-y-3"></div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // App State - Load from localStorage if available
+    const totalTopics = 13;
+    let completedTopics = JSON.parse(localStorage.getItem('survivalModelsProgress')) || Array(totalTopics).fill(false);
+
+    const topics = [
+        "Topic 1: Introduction to Survival Analysis",
+        "Topic 2: Survival Functions & Hazard Functions",
+        "Topic 3: Censoring and Truncation Mechanisms",
+        "Topic 4: Non-parametric Estimation (Kaplan-Meier)",
+        "Topic 5: Nelson-Aalen Estimator",
+        "Topic 6: Life Tables and Actuarial Estimators",
+        "Topic 7: Parametric Survival Distributions (Exponential)",
+        "Topic 8: Parametric Distributions (Weibull, Gompertz)",
+        "Topic 9: Proportional Hazards Models",
+        "Topic 10: Cox Proportional Hazards Regression",
+        "Topic 11: Assessing Model Fit and Diagnostics",
+        "Topic 12: Accelerated Failure Time Models",
+        "Topic 13: Competing Risks and Multi-state Models"
+    ];
+
+    // Initialize the app
+    function renderApp() {
+        const milestone1Container = document.getElementById('milestone-1');
+        const milestone2Container = document.getElementById('milestone-2');
+        const milestone3Container = document.getElementById('milestone-3');
+
+        milestone1Container.innerHTML = '';
+        milestone2Container.innerHTML = '';
+        milestone3Container.innerHTML = '';
+
+        topics.forEach((topic, index) => {
+            const isChecked = completedTopics[index];
+            const topicElement = createTopicElement(index, isChecked);
+
+            if (index < 4) {
+                milestone1Container.appendChild(topicElement);
+            } else if (index < 8) {
+                milestone2Container.appendChild(topicElement);
+            } else {
+                milestone3Container.appendChild(topicElement);
+            }
+        });
+
+        updateOverallProgress();
+        localStorage.setItem('survivalModelsProgress', JSON.stringify(completedTopics));
+    }
+
+    // Create individual topic row
+    function createTopicElement(index, isChecked) {
+        const row = document.createElement('label');
+        row.className = `flex items-center justify-between p-4 rounded-xl transition-all duration-300 border ${
+            isChecked ? 'bg-indigo-50 border-indigo-200' : 'bg-white border-slate-100 hover:border-indigo-100'
+        }`;
+
+        const textSpan = document.createElement('span');
+        textSpan.className = `font-semibold ${isChecked ? 'text-indigo-900' : 'text-slate-700'}`;
+        textSpan.textContent = topics[index];
+
+        const checkboxInput = document.createElement('input');
+        checkboxInput.type = 'checkbox';
+        checkboxInput.checked = isChecked;
+        checkboxInput.className = 'form-checkbox h-6 w-6 text-indigo-600 rounded-lg border-slate-300 focus:ring-indigo-500 transition-all cursor-pointer';
+
+        checkboxInput.addEventListener('change', () => {
+            completedTopics[index] = checkboxInput.checked;
+            renderApp();
+        });
+
+        const iconContainer = document.createElement('div');
+        iconContainer.className = `w-8 h-8 rounded-full flex items-center justify-center transition-colors ${
+            isChecked ? 'bg-indigo-600 text-white' : 'bg-slate-100 text-transparent'
+        }`;
+        
+        const icon = document.createElement('i');
+        icon.className = 'fas fa-check text-sm';
+        iconContainer.appendChild(icon);
+
+        row.appendChild(checkboxInput);
+        row.appendChild(textSpan);
+        row.appendChild(iconContainer);
+
+        return row;
+    }
+
+    // Update progress bar and texts
+    function updateOverallProgress() {
+        const completedCount = completedTopics.filter(Boolean).length;
+        const percentage = Math.round((completedCount / totalTopics) * 100);
+
+        const progressBar = document.getElementById('progress-bar');
+        const overallText = document.getElementById('overall-text');
+        const percentageBadge = document.getElementById('percentage-badge');
+
+        progressBar.style.width = `${percentage}%`;
+        overallText.textContent = `${completedCount}/${totalTopics} Topics`;
+        percentageBadge.textContent = `${percentage}%`;
+    }
+
+    // Run on load
+    renderApp();
+</script>
+
+</body>
+</html>
