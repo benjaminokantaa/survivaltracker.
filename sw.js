@@ -1,4 +1,4 @@
-const CACHE_NAME = 'sm-tracker-v3';
+const CACHE_NAME = 'sm-tracker-v4';
 const ASSETS = [
   './',
   './index.html',
@@ -26,5 +26,18 @@ self.addEventListener('activate', (e) => {
 self.addEventListener('fetch', (e) => {
   e.respondWith(
     caches.match(e.request).then((res) => res || fetch(e.request))
+  );
+});
+
+// Handle notification events inside Service Worker
+self.addEventListener('notificationclick', (event) => {
+  event.notification.close();
+  event.waitUntil(
+    clients.matchAll({ type: 'window', includeUncontrolled: true }).then((clientList) => {
+      if (clientList.length > 0) {
+        return clientList[0].focus();
+      }
+      return clients.openWindow('./');
+    })
   );
 });
