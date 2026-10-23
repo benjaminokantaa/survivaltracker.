@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Survival Models - Pace App</title>
+    <title>ACT 401: Survival Models Tracker</title>
     
     <!-- PWA Settings -->
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#0b0f19">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="SM Tracker">
+    <meta name="apple-mobile-web-app-title" content="ACT 401">
     <link rel="apple-touch-icon" href="https://cdn-icons-png.flaticon.com/512/3413/3413535.png">
 
     <!-- Fonts & Tailwind -->
@@ -51,8 +51,8 @@
     <!-- Top Navigation / Install Action -->
     <div class="flex items-center justify-between py-3 mb-4">
         <div class="flex items-center gap-2.5">
-            <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-sm font-bold shadow-lg shadow-indigo-500/30">
-                SM
+            <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-indigo-500/30">
+                ACT
             </div>
             <span class="text-xs uppercase font-extrabold tracking-widest text-slate-400">Pace Tracker</span>
         </div>
@@ -63,16 +63,19 @@
 
     <!-- Header Section -->
     <header class="mb-6">
-        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">Survival Models</h1>
-        <p class="text-xs sm:text-sm text-slate-400 mt-1">Study Schedule: Mondays, Thursdays & Fridays</p>
+        <div class="flex items-center gap-2 text-indigo-400 text-xs font-bold uppercase tracking-wider mb-1">
+            <span>UCC • 2026/2027</span>
+        </div>
+        <h1 class="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">ACT 401: Survival Models</h1>
+        <p class="text-xs sm:text-sm text-slate-400 mt-1">Study Blocks: Mon, Thu & Fri • Lecturer: Mrs. Stella Omane Acheampong</p>
     </header>
 
     <!-- Progress Card -->
     <div class="glass-card rounded-2xl p-5 mb-6 shadow-2xl">
         <div class="flex justify-between items-baseline mb-3">
             <div>
-                <span class="text-[10px] font-bold tracking-wider text-slate-400 uppercase">Total Progress</span>
-                <div class="text-2xl font-black text-white mt-0.5" id="stats-count">0 of 17 sessions completed</div>
+                <span class="text-[10px] font-bold tracking-wider text-slate-400 uppercase">Overall Course Completion</span>
+                <div class="text-2xl font-black text-white mt-0.5" id="stats-count">0 of 0 completed</div>
             </div>
             <div id="stats-pct" class="text-xl font-black text-indigo-400">0%</div>
         </div>
@@ -88,92 +91,92 @@
     const schedule = [
         {
             milestoneTitle: "Milestone 1: Quiz 1 Prep",
-            milestoneTag: "Target: Nov 5",
+            milestoneTag: "Weeks 1–3",
             tagColor: "amber",
             weeks: [
                 {
-                    weekTitle: "Week 1",
+                    weekTitle: "Week 1: Distribution of T & Functions",
                     items: [
-                        { id: 0, title: "Topic 1: Introduction to Survival Analysis", date: "Thu, Oct 22", type: "topic" },
-                        { id: 1, title: "Topic 2: Survival Functions & Hazard Functions", date: "Fri, Oct 23", type: "topic" }
+                        { id: 1, title: "Survival Function S(t) & Cumulative Distribution F(t)", date: "Thu, Oct 29", type: "topic" },
+                        { id: 2, title: "Probability Density Function f(t) & Hazard Rate λ(t)", date: "Fri, Oct 30", type: "topic" },
+                        { id: 3, title: "Parametric Models: Uniform & Exponential Distributions", date: "Mon, Nov 2", type: "topic" }
                     ]
                 },
                 {
-                    weekTitle: "Week 2",
+                    weekTitle: "Week 2: Extended Parametric Models",
                     items: [
-                        { id: 2, title: "Topic 3: Censoring and Truncation Mechanisms", date: "Mon, Oct 26", type: "topic" },
-                        { id: 3, title: "Topic 4: Non-parametric Estimation (Kaplan-Meier)", date: "Thu, Oct 29", type: "topic" },
-                        { id: 4, title: "Buffer & Practice Problems (Topics 1–4)", date: "Fri, Oct 30", type: "practice" }
+                        { id: 4, title: "Gompertz Distribution & Makeham Distribution", date: "Thu, Nov 5", type: "topic" },
+                        { id: 5, title: "Weibull Distribution & Other Survival Distributions", date: "Fri, Nov 6", type: "topic" },
+                        { id: 6, title: "Practice Problem Set: Parametric Derivations & Properties", date: "Mon, Nov 9", type: "practice" }
                     ]
                 },
                 {
-                    weekTitle: "Week 3",
+                    weekTitle: "Week 3: Truncation & Censoring",
                     items: [
-                        { id: 5, title: "Quiz 1 Review & Past Papers", date: "Mon, Nov 2", type: "review" },
-                        { id: 6, title: "🎯 Quiz 1 Target Date (Topics 1–4)", date: "Thu, Nov 5", type: "exam" }
+                        { id: 7, title: "Censoring: Right, Left, and Interval Censoring Mechanisms", date: "Thu, Nov 12", type: "topic" },
+                        { id: 8, title: "Truncation: Left and Right Truncation", date: "Fri, Nov 13", type: "topic" },
+                        { id: 9, title: "🎯 Quiz 1 Review & Past Questions Drill (Weeks 1–3)", date: "Mon, Nov 16", type: "exam" }
                     ]
                 }
             ]
         },
         {
             milestoneTitle: "Milestone 2: Quiz 2 Prep",
-            milestoneTag: "Target: Nov 19",
+            milestoneTag: "Weeks 4–7",
             tagColor: "indigo",
             weeks: [
                 {
-                    weekTitle: "Week 3 (Continued)",
+                    weekTitle: "Weeks 4 & 5: Non-parametric Estimators",
                     items: [
-                        { id: 7, title: "Topic 5: Nelson-Aalen Estimator", date: "Fri, Nov 6", type: "topic" }
+                        { id: 10, title: "Kaplan–Meier Estimator (Product-Limit Estimator)", date: "Thu, Nov 19", type: "topic" },
+                        { id: 11, title: "Kaplan–Meier Variance & Greenwood's Formula", date: "Fri, Nov 20", type: "topic" },
+                        { id: 12, title: "Nelson–Aalen Estimator for Cumulative Hazard", date: "Mon, Nov 23", type: "topic" },
+                        { id: 13, title: "Comparison & Practice: Kaplan–Meier vs. Nelson–Aalen", date: "Thu, Nov 26", type: "practice" }
                     ]
                 },
                 {
-                    weekTitle: "Week 4",
+                    weekTitle: "Weeks 6 & 7: Estimation & MLE",
                     items: [
-                        { id: 8, title: "Topic 6: Life Tables and Actuarial Estimators", date: "Mon, Nov 9", type: "topic" },
-                        { id: 9, title: "Topic 7: Parametric Survival Distributions (Exponential)", date: "Thu, Nov 12", type: "topic" },
-                        { id: 10, title: "Topic 8: Parametric Distributions (Weibull, Gompertz)", date: "Fri, Nov 13", type: "topic" }
-                    ]
-                },
-                {
-                    weekTitle: "Week 5",
-                    items: [
-                        { id: 11, title: "Quiz 2 Review & Problem Sets (Topics 5–8)", date: "Mon, Nov 16", type: "review" },
-                        { id: 12, title: "🎯 Quiz 2 Target Date (Topics 5–8)", date: "Thu, Nov 19", type: "exam" }
+                        { id: 14, title: "Further Non-parametric Applications & Computational Drills", date: "Fri, Nov 27", type: "topic" },
+                        { id: 15, title: "Maximum Likelihood Estimation (MLE) in Survival Models", date: "Mon, Nov 30", type: "topic" },
+                        { id: 16, title: "Likelihood Functions with Censored & Truncated Data", date: "Thu, Dec 3", type: "topic" },
+                        { id: 17, title: "🎯 Quiz 2 Review & Past Papers (Weeks 4–7)", date: "Fri, Dec 4", type: "exam" }
                     ]
                 }
             ]
         },
         {
-            milestoneTitle: "Milestone 3: Final Review",
-            milestoneTag: "Target: End of Nov",
+            milestoneTitle: "Milestone 3: Final Examination Prep",
+            milestoneTag: "Weeks 8–11",
             tagColor: "violet",
             weeks: [
                 {
-                    weekTitle: "Week 5 (Continued)",
+                    weekTitle: "Weeks 8 & 9: Mortality Data Estimation",
                     items: [
-                        { id: 13, title: "Topic 9: Proportional Hazards Models", date: "Fri, Nov 20", type: "topic" }
+                        { id: 18, title: "Survival Functions from Complete Mortality Data", date: "Mon, Dec 7", type: "topic" },
+                        { id: 19, title: "Survival Functions from Incomplete Mortality Data", date: "Thu, Dec 10", type: "topic" },
+                        { id: 20, title: "Moment Procedures & Actuarial Methods", date: "Fri, Dec 11", type: "topic" },
+                        { id: 21, title: "Buffer & Problem Solving on Incomplete Data", date: "Mon, Dec 14", type: "practice" }
                     ]
                 },
                 {
-                    weekTitle: "Week 6",
+                    weekTitle: "Weeks 10 & 11: Regression & Final Review",
                     items: [
-                        { id: 14, title: "Topic 10: Cox Proportional Hazards Regression", date: "Mon, Nov 23", type: "topic" },
-                        { id: 15, title: "Topic 11: Assessing Model Fit and Diagnostics", date: "Thu, Nov 26", type: "topic" },
-                        { id: 16, title: "Topic 12: Accelerated Failure Time Models", date: "Fri, Nov 27", type: "topic" }
-                    ]
-                },
-                {
-                    weekTitle: "Week 7",
-                    items: [
-                        { id: 17, title: "Topic 13: Competing Risks and Multi-state Models", date: "Mon, Nov 30", type: "topic" }
+                        { id: 22, title: "Cox Proportional Hazards Model Formulation", date: "Thu, Dec 17", type: "topic" },
+                        { id: 23, title: "Partial Likelihood & Interpretation of Hazard Ratios", date: "Fri, Dec 18", type: "topic" },
+                        { id: 24, title: "Comprehensive Course Review & Past Questions Drill", date: "Mon, Dec 21", type: "review" },
+                        { id: 25, title: "🏁 End of Semester Exam Final Preparation", date: "Thu, Dec 24", type: "exam" }
                     ]
                 }
             ]
         }
     ];
 
-    const totalSessions = 18;
-    let completed = JSON.parse(localStorage.getItem('sm_full_schedule_state')) || {};
+    // Compute total sessions dynamically
+    let totalSessions = 0;
+    schedule.forEach(m => m.weeks.forEach(w => totalSessions += w.items.length));
+
+    let completed = JSON.parse(localStorage.getItem('act401_schedule_state')) || {};
 
     function render() {
         const container = document.getElementById('milestones-container');
@@ -269,7 +272,7 @@
             container.appendChild(section);
         });
 
-        const pct = Math.round((doneCount / totalSessions) * 100);
+        const pct = totalSessions > 0 ? Math.round((doneCount / totalSessions) * 100) : 0;
         document.getElementById('stats-count').textContent = `${doneCount} of ${totalSessions} sessions completed`;
         document.getElementById('stats-pct').textContent = `${pct}%`;
         document.getElementById('progress-bar').style.width = `${pct}%`;
@@ -277,7 +280,7 @@
 
     function toggleItem(id) {
         completed[id] = !completed[id];
-        localStorage.setItem('sm_full_schedule_state', JSON.stringify(completed));
+        localStorage.setItem('act401_schedule_state', JSON.stringify(completed));
         render();
     }
 
