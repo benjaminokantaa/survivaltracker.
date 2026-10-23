@@ -48,7 +48,7 @@
 </head>
 <body class="p-4 sm:p-6 pb-20 max-w-xl mx-auto selection:bg-indigo-500 selection:text-white">
 
-    <!-- Top Navigation / Install Action -->
+    <!-- Top Navigation / Install & Notification Actions -->
     <div class="flex items-center justify-between py-3 mb-4">
         <div class="flex items-center gap-2.5">
             <div class="w-8 h-8 rounded-lg bg-indigo-600 flex items-center justify-center text-white text-xs font-black shadow-lg shadow-indigo-500/30">
@@ -56,9 +56,15 @@
             </div>
             <span class="text-xs uppercase font-extrabold tracking-widest text-slate-400">Pace Tracker</span>
         </div>
-        <button id="install-btn" class="hidden items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-1.5 rounded-full transition-all shadow-md shadow-indigo-600/30">
-            <i class="fas fa-download text-[10px]"></i> Install App
-        </button>
+        <div class="flex items-center gap-2">
+            <button id="notif-btn" class="flex items-center gap-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold px-3 py-1.5 rounded-full transition-all border border-slate-700">
+                <i class="fas fa-bell text-[11px]" id="notif-icon"></i>
+                <span id="notif-text">Alerts</span>
+            </button>
+            <button id="install-btn" class="hidden items-center gap-1.5 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3.5 py-1.5 rounded-full transition-all shadow-md shadow-indigo-600/30">
+                <i class="fas fa-download text-[10px]"></i> Install App
+            </button>
+        </div>
     </div>
 
     <!-- Header Section -->
@@ -172,7 +178,6 @@
         }
     ];
 
-    // Compute total sessions dynamically
     let totalSessions = 0;
     schedule.forEach(m => m.weeks.forEach(w => totalSessions += w.items.length));
 
@@ -281,15 +286,26 @@
     function toggleItem(id) {
         completed[id] = !completed[id];
         localStorage.setItem('act401_schedule_state', JSON.stringify(completed));
+        
+        if (completed[id] && Notification.permission === 'granted') {
+            triggerNotification('Session Completed! 🎯', 'Great pace! Your Survival Models progress has been updated.');
+        }
+
         render();
     }
 
     render();
 
     // Register Service Worker for PWA
+    let swRegistration = null;
     if ('serviceWorker' in navigator) {
         window.addEventListener('load', () => {
-            navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed:', err));
+            navigator.serviceWorker.register('./sw.js')
+                .then(reg => {
+                    swRegistration = reg;
+                    checkStudyDayNotification();
+                })
+                .catch(err => console.log('SW registration failed:', err));
         });
     }
 
@@ -314,6 +330,74 @@
         }
         deferredPrompt = null;
     });
+
+    // Notification System
+    const notifBtn = document.getElementById('notif-btn');
+    const notifText = document.getElementById('notif-text');
+    const notifIcon = document.getElementById('notif-icon');
+
+    function updateNotifBtnUI() {
+        if (!('Notification' in window)) {
+            notifBtn.classList.add('hidden');
+            return;
+        }
+        if (Notification.permission === 'granted') {
+            notifBtn.classList.remove('bg-slate-800', 'text-slate-300', 'border-slate-700');
+            notifBtn.classList.add('bg-indigo-600/20', 'text-indigo-400', 'border-indigo-500/30');
+            notifText.textContent = 'Active';
+            notifIcon.className = 'fas fa-bell text-[11px]';
+        } else {
+            notifBtn.classList.remove('bg-indigo-600/20', 'text-indigo-400', 'border-indigo-500/30');
+            notifBtn.classList.add('bg-slate-800', 'text-slate-300', 'border-slate-700');
+            notifText.textContent = 'Alerts';
+            notifIcon.className = 'far fa-bell text-[11px]';
+        }
+    }
+
+    notifBtn.addEventListener('click', async () => {
+        if (!('Notification' in window)) {
+            alert('Notifications are not supported by this browser.');
+            return;
+        }
+
+        if (Notification.permission === 'default') {
+            const permission = await Notification.requestPermission();
+            updateNotifBtnUI();
+            if (permission === 'granted') {
+                triggerNotification('Survival Models Reminders On', 'You will receive study alerts on Mondays, Thursdays, and Fridays!');
+            }
+        } else if (Notification.permission === 'granted') {
+            triggerNotification('Pace Check', 'Notifications are already enabled for your ACT 401 schedule.');
+        } else {
+            alert('Notifications are blocked in your browser settings. Enable them in site settings to receive reminders.');
+        }
+    });
+
+    function triggerNotification(title, body) {
+        if (swRegistration && 'showNotification' in swRegistration) {
+            swRegistration.showNotification(title, {
+                body: body,
+                icon: 'https://cdn-icons-png.flaticon.com/512/3413/3413535.png',
+                badge: 'https://cdn-icons-png.flaticon.com/512/3413/3413535.png'
+            });
+        } else if (Notification.permission === 'granted') {
+            new Notification(title, { body: body });
+        }
+    }
+
+    function checkStudyDayNotification() {
+        if (Notification.permission !== 'granted') return;
+        const dayOfWeek = new Date().getDay(); // 1 = Mon, 4 = Thu, 5 = Fri
+        const todayKey = new Date().toDateString();
+        const lastNotified = localStorage.getItem('sm_last_study_alert');
+
+        if ([1, 4, 5].includes(dayOfWeek) && lastNotified !== todayKey) {
+            triggerNotification('Survival Models Study Day 📖', 'Today is a scheduled ACT 401 study day. Check your tracker to see today’s focus!');
+            localStorage.setItem('sm_last_study_alert', todayKey);
+        }
+    }
+
+    updateNotifBtnUI();
 </script>
 </body>
 </html>
